@@ -91,27 +91,33 @@ public class Exam {
                 '}';
     }
 
-    public List<Exam> getExams() throws IOException {
+    public static List<Exam> getExams() throws IOException {
         ExamDao examDao = new ExamDao();
 
         return examDao.getAll();
     }
 
-    public void update() throws IOException {
+    public static void update(Exam exam) throws IOException {
         ExamDao examDao = new ExamDao();
 
-        examDao.update(this);
+        examDao.update(exam);
     }
 
-    public void deleteExam() throws IOException {
+    public static void deleteExam(Exam exam) throws IOException {
         ExamDao examDao = new ExamDao();
 
-        examDao.delete(this);
+        examDao.delete(exam);
     }
 
-    public void saveExam() throws Exception {
+    public static void saveExam(Exam exam) throws Exception {
         ExamDao examDao = new ExamDao();
 
-        examDao.save(this);
+        examDao.save(exam);
+    }
+    
+    public static Exam getExamByName(String examNm) throws Exception {
+        ExamDao examDao = new ExamDao();
+        
+        return examDao.get(examNm);
     }
 }

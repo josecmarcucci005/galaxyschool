@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.galaxyschool.view.TeacherPanel">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.galaxyschool.controller.TeacherController">
    <children>
       <HBox alignment="TOP_RIGHT" layoutX="-1.0" prefHeight="34.0" prefWidth="807.0" style="-fx-background-color: #004080;">
          <children>
@@ -50,7 +50,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
                <children>
-                  <ListView prefHeight="338.0" prefWidth="282.0" />
+                  <ListView fx:id="examList" prefHeight="338.0" prefWidth="282.0" />
                </children>
             </HBox>
             <JFXButton buttonType="RAISED" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="200.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add Exam" textFill="WHITE">
@@ -103,7 +103,7 @@
       <Separator layoutX="312.0" layoutY="334.0" prefHeight="7.0" prefWidth="484.0" />
       <TableView layoutX="314.0" layoutY="351.0" prefHeight="195.0" prefWidth="478.0">
          <placeholder>
-            <Label text="Select a question"/>
+            <Label text="Select a question" />
          </placeholder>
         <columns>
           <TableColumn prefWidth="172.0" text="Answer" />

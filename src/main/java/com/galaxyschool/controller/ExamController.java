@@ -1,31 +1,39 @@
 package com.galaxyschool.controller;
 
-import com.galaxyschool.db.ExamDao;
-import com.galaxyschool.model.Exam;;
+import com.galaxyschool.model.Exam;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.util.List;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class ExamController {
+public class ExamController implements Initializable {
 
-    private ExamDao examDao = new ExamDao();
-
-    public ExamController() throws IOException {
+    private static Stage stage;
+    
+    @FXML
+    private Exam exam;
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        
+    }
+    
+    public void setExam(String examNm) throws Exception {
+        this.exam = Exam.getExamByName(examNm);
     }
 
-    public List<Exam> getExams() {
-        return examDao.getAll();
+    public void hideWindow(MouseEvent mouseEvent) {
+        stage.setIconified(true);
     }
 
-    public void updateExam(Exam exam) throws IOException {
-        examDao.update(exam);
+    public void closeWindow(MouseEvent mouseEvent) {
+        stage.hide();
     }
 
-    public void deleteExam(Exam exam) throws IOException {
-        examDao.delete(exam);
-    }
-
-    public void saveExam(Exam exam) throws Exception {
-        examDao.save(exam);
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }

@@ -1,29 +1,28 @@
 package com.galaxyschool.view;
 
 import com.galaxyschool.controller.ExamController;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import com.galaxyschool.controller.QuestionController;
+import com.galaxyschool.model.Exam;
+import com.galaxyschool.model.Question;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.IOException;
-
-public class UpdateExam extends GalaxyApp {
+public class UpdateQuestion extends GalaxyApp {
 
     private static Stage stage;
 
-    private String examName;
+    private Question question;
+    private Exam parentExam;
 
-    public UpdateExam() {
+    public UpdateQuestion() {
     }
 
-    public UpdateExam(String examName) {
-        this.examName = examName;
+    public UpdateQuestion(Question question, Exam parentExam) {
+        this.question = question;
+        this.parentExam = parentExam;
     }
 
     public static void main(String[] args) {
@@ -40,12 +39,13 @@ public class UpdateExam extends GalaxyApp {
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-        ExamController examController = new ExamController();
-        examController.setExam(examName);
-        examController.setStage(stage);
+        QuestionController questionController = new QuestionController();
+        questionController.setQuestion(question);
+        questionController.setExamParent(parentExam);
+        questionController.setStage(stage);
 
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./UpdateExam.fxml"));
-        loader.setController(examController);
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./UpdateQuestion.fxml"));
+        loader.setController(questionController);
 
         Parent root = loader.load();
 

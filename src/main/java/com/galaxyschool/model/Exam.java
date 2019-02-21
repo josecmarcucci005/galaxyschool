@@ -1,5 +1,6 @@
 package com.galaxyschool.model;
 
+import com.galaxyschool.db.DuplicateExamException;
 import com.galaxyschool.db.ExamDao;
 
 import java.io.IOException;
@@ -109,7 +110,7 @@ public class Exam {
         examDao.delete(exam);
     }
 
-    public static void saveExam(Exam exam) throws Exception {
+    public static void saveExam(Exam exam) throws IOException, DuplicateExamException {
         ExamDao examDao = new ExamDao();
 
         examDao.save(exam);

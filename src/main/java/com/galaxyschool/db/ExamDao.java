@@ -93,8 +93,9 @@ public class ExamDao implements Dao<Exam> {
 
                             String answerText = (String) answerJsonObject.get("text");
                             boolean correctAnswer = (Boolean) answerJsonObject.get("correctAnswer");
+                            String explanation = (String) answerJsonObject.get("explanation");
 
-                            answers.add(new Answer(answerText, correctAnswer));
+                            answers.add(new Answer(answerText, correctAnswer, explanation));
                         }
 
                         questions.add(new Question(questionText, answers));
@@ -111,9 +112,9 @@ public class ExamDao implements Dao<Exam> {
     }
 
     @Override
-    public void save(Exam exam) throws Exception {
+    public void save(Exam exam) throws DuplicateExamException, IOException {
         if (get(exam.getName()) != null) {
-            throw new Exception("The exam with name '" + exam.getName() + "' already exists!");
+            throw new DuplicateExamException("The exam with name '" + exam.getName() + "' already exists so it can't be created!");
         }
 
         exams.add(exam);
@@ -169,6 +170,7 @@ public class ExamDao implements Dao<Exam> {
                 JSONObject answerObject = new JSONObject();
                 answerObject.put("text", a.getText());
                 answerObject.put("correctAnswer", a.isCorrectAnswer());
+                answerObject.put("explanation", a.getExplanation());
 
                 answers.add(answerObject);
             }

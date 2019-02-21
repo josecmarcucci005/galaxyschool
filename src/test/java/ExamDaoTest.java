@@ -22,8 +22,8 @@ public class ExamDaoTest {
         ExamDao examDao = new ExamDao(new File(System.getProperty("user.home") + "/galaxyschool/examsTest.json"));
 
         List<Answer> answers = new ArrayList<>();
-        answers.add(new Answer("This is wrong answer", false));
-        answers.add(new Answer("This is correct answer", true));
+        answers.add(new Answer("This is wrong answer", false, "This is the reason answer"));
+        answers.add(new Answer("This is correct answer", true, "This is the reason answer"));
 
         List<Question> questions = new ArrayList<>();
         questions.add(new Question("Who is this?", answers));
@@ -42,8 +42,8 @@ public class ExamDaoTest {
 
         //testing update exams
         List<Answer> answers2 = new ArrayList<>();
-        answers2.add(new Answer("This is wrong answer2", false));
-        answers2.add(new Answer("This is correct answer2", true));
+        answers2.add(new Answer("This is wrong answer2", false, "Another explanation"));
+        answers2.add(new Answer("This is correct answer2", true, "Another explanation"));
 
         List<Question> questions2 = new ArrayList<>();
         questions2.add(new Question("Who is this2?", answers2));
@@ -64,7 +64,7 @@ public class ExamDaoTest {
 
 
 
-    @After
+    @AfterClass
     public void deleteFile() throws IOException {
         ExamDao examDao = new ExamDao(new File(System.getProperty("user.home") + "/galaxyschool/examsTest.json"));
         examDao.deleteAll();

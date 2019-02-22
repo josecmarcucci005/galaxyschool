@@ -99,12 +99,12 @@
             <Label text="Select a question" />
          </placeholder>
         <columns>
-          <TableColumn prefWidth="280.0" text="Answer" />
-           <TableColumn minWidth="0.0" prefWidth="67.0" text="Correct" />
-           <TableColumn minWidth="0.0" prefWidth="133.0" />
+           <TableColumn fx:id="answerColumn" prefWidth="317.0" text="Answer" resizable="false" maxWidth="317" />
+           <TableColumn fx:id="correctColumn" minWidth="0.0" prefWidth="65.0" text="Correct" resizable="false" maxWidth="65" />
+           <TableColumn fx:id="buttonColumn" minWidth="0.0" prefWidth="98.0" text="Action" resizable="false" maxWidth="98"/>
         </columns>
       </TableView>
-      <JFXButton buttonType="RAISED" layoutX="497.0" layoutY="551.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
+      <JFXButton buttonType="RAISED" layoutX="497.0" layoutY="551.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createNewAnswer" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
          <font>
             <Font name="Calibri Light" size="14.0" />
          </font>

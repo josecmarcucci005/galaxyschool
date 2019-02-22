@@ -2,6 +2,7 @@ package com.galaxyschool.view;
 
 import com.galaxyschool.controller.TeacherController;
 import com.galaxyschool.model.Exam;
+import com.galaxyschool.model.Question;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ public class TeacherPanel extends GalaxyApp {
     private static Stage stage;
 
     private Exam predefineExam;
+    private Question predifineQuestion;
 
     public static void main(String[] args) {
         launch(args);
@@ -38,6 +40,7 @@ public class TeacherPanel extends GalaxyApp {
 
         TeacherController teacherController = new TeacherController();
         teacherController.setPredefineExam(predefineExam);
+        teacherController.setPredefineQuestion(predifineQuestion);
         teacherController.setStage(stage);
 
         loader.setController(teacherController);
@@ -56,5 +59,9 @@ public class TeacherPanel extends GalaxyApp {
 
     public void setPredefineExam(Exam predefineExam) {
         this.predefineExam = predefineExam;
+    }
+
+    public void setPredifineQuestion(Question predifineQuestion) {
+        this.predifineQuestion = predifineQuestion;
     }
 }

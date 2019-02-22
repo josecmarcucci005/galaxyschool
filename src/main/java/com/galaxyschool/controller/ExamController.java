@@ -46,7 +46,10 @@ public class ExamController implements Initializable {
             authorField.setText(exam.getAuthor());
             levelCbx.getSelectionModel().select(Long.toString(exam.getLevel()));
             creationDateP.setValue(exam.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        } else {
+            creationDateP.setValue(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
+
     }
     
     public void setExam(String examNm) throws Exception {
@@ -68,6 +71,18 @@ public class ExamController implements Initializable {
     }
 
     public void saveExam(ActionEvent actionEvent)  {
+
+        if (creationDateP.getValue() == null || examNmField.getText() == null || examNmField.getText().isEmpty() ||
+                levelCbx.getValue() == null || levelCbx.getValue().isEmpty() || authorField.getText() == null || authorField.getText().isEmpty() ) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setHeaderText(null);
+            alert.setContentText("You must enter all fields to be able to save the answer!" );
+            alert.showAndWait();
+
+            return;
+        }
+
         Date date = Date.from(creationDateP.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         try {

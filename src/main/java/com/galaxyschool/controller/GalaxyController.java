@@ -32,15 +32,18 @@ public abstract class GalaxyController implements Initializable {
     protected HBox generateRowListWithButton(long labelMaxWidth, String labelTxt, Button... butts) {
         HBox hbox = new HBox();
 
-        Label label = new Label(labelTxt);
-        label.setWrapText(true);
-        label.setMaxWidth(labelMaxWidth);
-
         Pane pane = new Pane();
 
         HBox.setHgrow(pane, Priority.ALWAYS);
 
-        hbox.getChildren().addAll(label, pane);
+        if (labelTxt != null) {
+            Label label = new Label(labelTxt);
+            label.setWrapText(true);
+            label.setMaxWidth(labelMaxWidth);
+
+            hbox.getChildren().addAll(label, pane);
+        }
+
         hbox.getChildren().addAll(butts);
 
         return hbox;

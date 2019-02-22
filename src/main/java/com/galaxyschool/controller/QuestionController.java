@@ -62,6 +62,16 @@ public class QuestionController extends GalaxyController {
     }
 
     public void saveQuestion(ActionEvent actionEvent) throws IOException {
+        if (questionTxt.getText() == null || questionTxt.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setHeaderText(null);
+            alert.setContentText("You must enter the text field to be able to save the question!" );
+            alert.showAndWait();
+
+            return;
+        }
+
         String operation;
         if (question == null) {
             question = new Question(questionTxt.getText(), new ArrayList<>());

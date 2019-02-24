@@ -37,25 +37,12 @@ public class UpdateQuestion extends GalaxyApp {
 
         stage = primaryStage;
 
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-
         QuestionController questionController = new QuestionController();
         questionController.setQuestion(question);
         questionController.setExamParent(parentExam);
         questionController.setStage(stage);
 
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./UpdateQuestion.fxml"));
-        loader.setController(questionController);
-
-        Parent root = loader.load();
-
-        initWindowButtons(root, stage);
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().setAll(ClassLoader.getSystemClassLoader().getResource("./style.css").toExternalForm());
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        initApp(stage, questionController, "./UpdateQuestion.fxml");
     }
 
 }

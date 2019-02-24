@@ -20,6 +20,9 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TeacherController extends GalaxyController {
@@ -44,7 +47,7 @@ public class TeacherController extends GalaxyController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+
         //Populating exam list view
         examList.setCellFactory(new Callback<ListView<Exam>, ListCell>() {
             @Override
@@ -62,7 +65,7 @@ public class TeacherController extends GalaxyController {
 
             @Override
             public void handle(MouseEvent event) {
-                Exam e = (Exam)examList.getSelectionModel().getSelectedItem();
+                Exam e = (Exam) examList.getSelectionModel().getSelectedItem();
 
                 updateQuestionListView(e, null);
             }
@@ -70,28 +73,22 @@ public class TeacherController extends GalaxyController {
 
         if (predefineExam != null) {
             examList.getSelectionModel().select(predefineExam);
+
             updateQuestionListView(predefineExam, predefineQuestion);
         }
-
-    }
-    
-    public void hideWindow(MouseEvent mouseEvent) {
-        stage.setIconified(true);
-    }
-
-    public void closeWindow(MouseEvent mouseEvent) {
-        stage.hide();
     }
 
     public void updateQuestionListView(Exam exam, Question predefineQuestion) {
 
-        if (exam.getQuestions().isEmpty()) {
-            questionListView.getItems().clear();
+        if (exam.getQuestions() == null || exam.getQuestions().isEmpty()) {
+            questionListView.setItems(FXCollections.observableList(new ArrayList()));
 
             Label placeholder = new Label("There are not question for exam '" + exam.getName() + "'");
             placeholder.setMaxWidth(300);
 
             questionListView.setPlaceholder(placeholder);
+
+            updateAnswerTableView(null, exam);
         } else {
             //updating question list view
             questionListView.setCellFactory(new Callback<ListView<Question>, ListCell>() {
@@ -106,7 +103,7 @@ public class TeacherController extends GalaxyController {
 
                 @Override
                 public void handle(MouseEvent event) {
-                    Question question = (Question)questionListView.getSelectionModel().getSelectedItem();
+                    Question question = exam.getQuestions().get(questionListView.getSelectionModel().getSelectedIndex());
 
                     updateAnswerTableView(question, exam);
                 }
@@ -114,14 +111,17 @@ public class TeacherController extends GalaxyController {
 
             if (predefineQuestion != null) {
                 questionListView.getSelectionModel().select(predefineQuestion);
-                updateAnswerTableView(predefineQuestion, exam);
+
+                predefineQuestion = exam.getQuestions().get(questionListView.getSelectionModel().getSelectedIndex());
             }
+            questionListView.refresh();
+
             updateAnswerTableView(predefineQuestion, exam);
         }
     }
 
     public void updateAnswerTableView(Question question, Exam parentExam) {
-        tableViewAnswers.getItems().clear();
+        tableViewAnswers.setItems(FXCollections.observableArrayList(new ArrayList<>()));
 
         if (question == null) {
             Label placeholder = new Label("Select a question");
@@ -178,9 +178,8 @@ public class TeacherController extends GalaxyController {
             buttonColumn.setCellFactory(new AnswerTableCellFactory(question, parentExam));
 
             tableViewAnswers.getItems().setAll((FXCollections.observableArrayList(question.getAnswers())));
-
-            tableViewAnswers.refresh();
         }
+        tableViewAnswers.refresh();
     }
 
     public void showUpdateExam(String examName) throws Exception {
@@ -192,19 +191,25 @@ public class TeacherController extends GalaxyController {
     }
 
     public void showUpdateAnswer(Answer answer, Question parentQuestion, Exam parentExam) throws Exception {
-        new UpdateAnswer(parentQuestion, parentExam, answer).start(new Stage());
+        new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), parentExam, answer).start(new Stage());
     }
 
+    @Override
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    public void setPredefineExam(Exam predefineExam) {
-        this.predefineExam = predefineExam;
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 
-    public void setPredefineQuestion(Question predefineQuestion) {
-        this.predefineQuestion = predefineQuestion;
+    public void setPredefineReference(Exam predefineExam, Integer questionParentIdx) {
+        this.predefineExam = predefineExam;
+
+        if (questionParentIdx != null) {
+            this.predefineQuestion = predefineExam.getQuestions().get(questionParentIdx);
+        }
     }
 
     public void createNewExam(ActionEvent actionEvent) throws Exception {
@@ -231,7 +236,9 @@ public class TeacherController extends GalaxyController {
             alert.setContentText("You must select a question to be able to attach answers!" );
             alert.showAndWait();
         } else {
-            new UpdateAnswer((Question)questionListView.getSelectionModel().getSelectedItem(), (Exam)examList.getSelectionModel().getSelectedItem(), null).start(new Stage());
+            Exam e = (Exam)examList.getSelectionModel().getSelectedItem();
+
+            new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), e, null).start(new Stage());
         }
     }
 
@@ -325,7 +332,7 @@ public class TeacherController extends GalaxyController {
                 deleteButt.setOnAction(event -> {
                     try {
 
-                        if (questionListView.getSelectionModel().getSelectedItem().equals(obj)) {
+                        if (questionListView.getSelectionModel().getSelectedItem() != null && questionListView.getSelectionModel().getSelectedItem().equals(obj)) {
                             tableViewAnswers.getItems().clear();
 
                             Label placeholderAnswer = new Label("Select a question");
@@ -335,9 +342,14 @@ public class TeacherController extends GalaxyController {
                             tableViewAnswers.setPlaceholder(placeholderAnswer);
                         }
 
-                        parentExam.getQuestions().remove(obj);
+                        parentExam.getQuestions().remove(parentExam.getQuestions().get(getIndex()));
 
                         Exam.update(parentExam);
+
+                        examList.getItems().remove(examList.getItems().get(Collections.binarySearch(examList.getItems(), parentExam)));
+                        examList.getItems().add(parentExam);
+
+                        examList.refresh();
 
                         getListView().getItems().remove(getItem());
 
@@ -388,6 +400,9 @@ public class TeacherController extends GalaxyController {
                 setGraphic(null);
                 setText(null);
             } else {
+                Button showButt = generateButtonWithFontAwesomeIcon(FontAwesomeIconName.INFO_CIRCLE, BUTTON_COLOR_GREEN);
+                showButt.setTooltip(new Tooltip("View Details"));
+
                 Button editButt = generateButtonWithFontAwesomeIcon(FontAwesomeIconName.EDIT, BUTTON_COLOR_BLUE);
                 editButt.setTooltip(new Tooltip("Edit"));
 
@@ -404,7 +419,7 @@ public class TeacherController extends GalaxyController {
 
                 deleteButt.setOnAction(event -> {
                     try {
-                        parentQuestion.getAnswers().remove((Answer) getTableRow().getItem());
+                        parentQuestion.getAnswers().remove(getTableRow().getItem());
 
                         Exam.update(parentExam);
 
@@ -416,7 +431,7 @@ public class TeacherController extends GalaxyController {
                     }
                 });
 
-                HBox hbox = generateRowListWithButton(0, null, editButt, deleteButt);
+                HBox hbox = generateRowListWithButton(0, null, showButt, editButt, deleteButt);
 
                 setGraphic(hbox);
             }

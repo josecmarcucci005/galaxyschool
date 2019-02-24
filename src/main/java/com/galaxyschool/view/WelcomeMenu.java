@@ -12,7 +12,7 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class WelcomeMenu extends Application {
+public class WelcomeMenu extends GalaxyApp {
 
     private static Stage stage;
 
@@ -25,44 +25,27 @@ public class WelcomeMenu extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        if (stage != null) {
+            stage.hide();
+        }
+
         stage = primaryStage;
+        stage.setResizable(false);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
         Parent root = FXMLLoader.load(ClassLoader.getSystemClassLoader().getResource("./WelcomeMenu.fxml"));
 
-        root.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
-        });
-        root.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            }
-        });
+        initWindowButtons(root, stage);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().setAll(ClassLoader.getSystemClassLoader().getResource("./style.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    public void showStudentPanel(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(ClassLoader.getSystemClassLoader().getResource("./WelcomeMenu.fxml"));
-
-        Scene scene = new Scene(root);
-
-        Stage studentStage = new Stage();
-
-        studentStage.setTitle("Student Section");
-        studentStage.setScene(scene);
-        studentStage.show();
+    public void showStudentPanel(ActionEvent actionEvent) throws Exception {
+        new WelcomeStudent().start(new Stage());
 
         WelcomeMenu.stage.hide();
     }

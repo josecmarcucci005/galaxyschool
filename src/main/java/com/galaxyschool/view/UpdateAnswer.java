@@ -15,15 +15,15 @@ public class UpdateAnswer extends GalaxyApp {
 
     private static Stage stage;
 
-    private Question question;
+    private Integer questionParentIdx;
     private Exam parentExam;
     private Answer answer;
 
     public UpdateAnswer() {
     }
 
-    public UpdateAnswer(Question question, Exam parentExam, Answer answer) {
-        this.question = question;
+    public UpdateAnswer(Integer questionParentIdx, Exam parentExam, Answer answer) {
+        this.questionParentIdx = questionParentIdx;
         this.parentExam = parentExam;
         this.answer = answer;
     }
@@ -40,26 +40,12 @@ public class UpdateAnswer extends GalaxyApp {
 
         stage = primaryStage;
 
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-
         AnswerController answerController = new AnswerController();
-        answerController.setParentExam(parentExam);
-        answerController.setParentQuestion(question);
+        answerController.setParentReference(parentExam, questionParentIdx);
         answerController.setAnswer(answer);
         answerController.setStage(stage);
 
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./UpdateAnswer.fxml"));
-        loader.setController(answerController);
-
-        Parent root = loader.load();
-
-        initWindowButtons(root, stage);
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().setAll(ClassLoader.getSystemClassLoader().getResource("./style.css").toExternalForm());
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        initApp(stage, answerController, "./UpdateAnswer.fxml");
     }
 
 }

@@ -17,13 +17,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExamDao implements Dao<Exam> {
 
     private File galaxyStarJsonFile;
     private List<Exam> exams = new ArrayList<>();
 
-    public ExamDao() throws IOException {
+    private static ExamDao instance;
+
+    public static ExamDao getInstance() throws IOException {
+        if (instance == null) {
+            instance = new ExamDao();
+        }
+        return instance;
+    }
+
+    private ExamDao() throws IOException {
         galaxyStarJsonFile = new File(System.getProperty("user.home") + "/galaxyschool/exams.json");
 
         initJsonFile();
@@ -52,6 +62,12 @@ public class ExamDao implements Dao<Exam> {
                 .filter(exam -> name.equals(exam.getName()))
                 .findAny()
                 .orElse(null);
+    }
+
+    public List<Exam> getExamsByAge(long level) {
+        return exams.stream()
+                .filter(exam -> level == exam.getLevel())
+                .collect(Collectors.toCollection(() -> new ArrayList<Exam>()));
     }
 
     @Override

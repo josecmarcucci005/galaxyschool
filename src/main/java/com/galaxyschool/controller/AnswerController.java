@@ -23,6 +23,7 @@ public class AnswerController extends GalaxyController {
     private Question parentQuestion;
     private Exam parentExam;
     private Answer answer;
+    private Integer questionParentIdx;
 
     @FXML
     private TextArea answerTxt;
@@ -44,26 +45,22 @@ public class AnswerController extends GalaxyController {
         }
     }
 
-    @Override
-    public void hideWindow(MouseEvent mouseEvent) {
-        stage.setIconified(true);
-    }
-
-    @Override
-    public void closeWindow(MouseEvent mouseEvent) {
-        stage.hide();
-    }
-
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    public void setParentQuestion(Question parentQuestion) {
-        this.parentQuestion = parentQuestion;
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 
-    public void setParentExam(Exam parentExam) {
+    public void setParentReference(Exam parentExam, Integer questionParentIdx) {
         this.parentExam = parentExam;
+        this.questionParentIdx = questionParentIdx;
+
+        if (questionParentIdx != null) {
+            this.parentQuestion = parentExam.getQuestions().get(questionParentIdx);
+        }
     }
 
     public void setAnswer(Answer answer) {
@@ -93,6 +90,8 @@ public class AnswerController extends GalaxyController {
             answer.setExplanation(explanationTxt.getText());
             answer.setCorrectAnswer(isCorrectRB.isSelected());
 
+            System.out.println("At not is null");
+
             operation = "updated";
         }
 
@@ -108,7 +107,7 @@ public class AnswerController extends GalaxyController {
 
         TeacherPanel teacherPanel = new TeacherPanel();
         teacherPanel.setPredefineExam(parentExam);
-        teacherPanel.setPredifineQuestion(parentQuestion);
+        teacherPanel.setQuestionParentIdx(questionParentIdx);
 
         teacherPanel.start(new Stage());
     }

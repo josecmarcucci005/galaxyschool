@@ -3,9 +3,7 @@ import com.galaxyschool.db.ExamDao;
 import com.galaxyschool.model.Answer;
 import com.galaxyschool.model.Exam;
 import com.galaxyschool.model.Question;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -62,10 +60,8 @@ public class ExamDaoTest {
 
     }
 
-
-
     @AfterClass
-    public void deleteFile() throws IOException {
+    public static void deleteFile() throws IOException {
         ExamDao examDao = new ExamDao(new File(System.getProperty("user.home") + "/galaxyschool/examsTest.json"));
         examDao.deleteAll();
     }

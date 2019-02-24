@@ -38,24 +38,11 @@ public class UpdateExam extends GalaxyApp {
 
         stage = primaryStage;
 
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-
         ExamController examController = new ExamController();
         examController.setExam(examName);
         examController.setStage(stage);
 
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./UpdateExam.fxml"));
-        loader.setController(examController);
-
-        Parent root = loader.load();
-
-        initWindowButtons(root, stage);
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().setAll(ClassLoader.getSystemClassLoader().getResource("./style.css").toExternalForm());
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        initApp(stage, examController, "./UpdateExam.fxml");
     }
 
 }

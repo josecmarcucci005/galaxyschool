@@ -15,6 +15,7 @@ public abstract class GalaxyController implements Initializable {
 
     protected String BUTTON_COLOR_BLUE = "#00A2D3";
     protected String BUTTON_COLOR_RED = "#ff4d4d";
+    protected String BUTTON_COLOR_GREEN = "#00e64d";
 
     protected Button generateButtonWithFontAwesomeIcon(FontAwesomeIconName icon, String color) {
         FontAwesomeIcon awesomeIcon = new FontAwesomeIcon();
@@ -49,10 +50,16 @@ public abstract class GalaxyController implements Initializable {
         return hbox;
     }
 
-    public abstract void hideWindow(MouseEvent mouseEvent);
+    public void hideWindow(MouseEvent mouseEvent) {
+        getStage().setIconified(true);
+    }
 
-    public abstract void closeWindow(MouseEvent mouseEvent);
+    public void closeWindow(MouseEvent mouseEvent) {
+        getStage().hide();
+    }
 
     public abstract void setStage(Stage stage);
+
+    public abstract Stage getStage();
 
 }

@@ -20,7 +20,7 @@ public class TeacherPanel extends GalaxyApp {
     private static Stage stage;
 
     private Exam predefineExam;
-    private Question predifineQuestion;
+    private Integer questionParentIdx;
 
     public static void main(String[] args) {
         launch(args);
@@ -33,14 +33,14 @@ public class TeacherPanel extends GalaxyApp {
         }
 
         stage = primaryStage;
+        stage.setResizable(false);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./TeacherPanel.fxml"));
 
         TeacherController teacherController = new TeacherController();
-        teacherController.setPredefineExam(predefineExam);
-        teacherController.setPredefineQuestion(predifineQuestion);
+        teacherController.setPredefineReference(predefineExam, questionParentIdx);
         teacherController.setStage(stage);
 
         loader.setController(teacherController);
@@ -61,7 +61,7 @@ public class TeacherPanel extends GalaxyApp {
         this.predefineExam = predefineExam;
     }
 
-    public void setPredifineQuestion(Question predifineQuestion) {
-        this.predifineQuestion = predifineQuestion;
+    public void setQuestionParentIdx(int questionParentIdx) {
+        this.questionParentIdx = questionParentIdx;
     }
 }

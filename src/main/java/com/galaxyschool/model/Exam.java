@@ -4,11 +4,12 @@ import com.galaxyschool.db.DuplicateExamException;
 import com.galaxyschool.db.ExamDao;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class Exam {
+public class Exam implements Comparable<Exam> {
 
     private String name;
     private String author;
@@ -93,32 +94,31 @@ public class Exam {
     }
 
     public static List<Exam> getExams() throws IOException {
-        ExamDao examDao = new ExamDao();
-
-        return examDao.getAll();
+        return ExamDao.getInstance().getAll();
     }
 
     public static void update(Exam exam) throws IOException {
-        ExamDao examDao = new ExamDao();
-
-        examDao.update(exam);
+        ExamDao.getInstance().update(exam);
     }
 
     public static void deleteExam(Exam exam) throws IOException {
-        ExamDao examDao = new ExamDao();
-
-        examDao.delete(exam);
+        ExamDao.getInstance().delete(exam);
     }
 
     public static void saveExam(Exam exam) throws IOException, DuplicateExamException {
-        ExamDao examDao = new ExamDao();
-
-        examDao.save(exam);
+        ExamDao.getInstance().save(exam);
     }
     
     public static Exam getExamByName(String examNm) throws Exception {
-        ExamDao examDao = new ExamDao();
-        
-        return examDao.get(examNm);
+        return ExamDao.getInstance().get(examNm);
+    }
+
+    public static List<Exam> getExamsByYear(String year) throws IOException {
+        return ExamDao.getInstance().getExamsByAge(Long.valueOf(year));
+    }
+
+    @Override
+    public int compareTo(Exam o) {
+        return name.compareTo(o.getName());
     }
 }

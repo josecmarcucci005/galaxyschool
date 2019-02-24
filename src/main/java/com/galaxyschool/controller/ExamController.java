@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-public class ExamController implements Initializable {
+public class ExamController extends GalaxyController {
 
     private static Stage stage;
 
@@ -37,7 +37,7 @@ public class ExamController implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        levelCbx.setItems(FXCollections.observableList(Arrays.asList("11", "12", "13")));
+        levelCbx.setItems(FXCollections.observableList(Arrays.asList("10","11", "12", "13")));
 
         if (exam != null) {
             examNmField.setText(exam.getName());
@@ -58,16 +58,14 @@ public class ExamController implements Initializable {
         }
     }
 
-    public void hideWindow(MouseEvent mouseEvent) {
-        stage.setIconified(true);
-    }
-
-    public void closeWindow(MouseEvent mouseEvent) {
-        stage.hide();
-    }
-
+    @Override
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 
     public void saveExam(ActionEvent actionEvent)  {

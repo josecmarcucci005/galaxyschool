@@ -48,17 +48,13 @@ public class QuestionController extends GalaxyController {
     }
 
     @Override
-    public void hideWindow(MouseEvent mouseEvent) {
-        stage.setIconified(true);
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     @Override
-    public void closeWindow(MouseEvent mouseEvent) {
-        stage.hide();
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
+    public Stage getStage() {
+        return stage;
     }
 
     public void saveQuestion(ActionEvent actionEvent) throws IOException {

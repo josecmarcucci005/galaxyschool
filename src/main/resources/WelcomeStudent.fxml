@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<AnchorPane maxWidth="1.7976931348623157E308" prefHeight="350.0" prefWidth="600.0" style="-fx-background-color: #e6e6e6;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="81.0" fitWidth="150.0" layoutX="519.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@schoolLogo.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="continueB" layoutX="412.0" layoutY="275.0" mnemonicParsing="false" onAction="#showStudentExamSession" prefHeight="35.0" prefWidth="95.0" style="-fx-background-color: #00A2D3;">
+         <graphic>
+            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="LONG_ARROW_RIGHT" size="1.5em" />
+         </graphic>
+         <tooltip><Tooltip text="Continue" /></tooltip>
+      </Button>
+      <HBox alignment="TOP_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="614.0" style="-fx-background-color: #004080;">
+         <children>
+            <ImageView fx:id="minimizeB" fitHeight="18.0" fitWidth="160.0" layoutX="592.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#hideWindow" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@minimizeB.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="closeB" fitHeight="18.0" fitWidth="160.0" layoutX="592.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#closeWindow" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@closeB.png" />
+               </image>
+            </ImageView>
+         </children></HBox>
+      <Label layoutX="35.0" layoutY="60.0" text="Welcome!">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="180.0" layoutY="120.0" text="Select your age:">
+      <font>
+         <Font size="14.0" />
+      </font>
+      </Label>
+      <ComboBox fx:id="ageComboBox" layoutX="330.0" layoutY="120.0" prefWidth="70.0" />
+      <Label layoutX="180.0" layoutY="160.0" text="Select an exam:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="examComboBox" layoutX="330.0" layoutY="160.0" prefWidth="120.0" />
+   </children>
+</AnchorPane>

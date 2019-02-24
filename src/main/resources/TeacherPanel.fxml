@@ -99,9 +99,9 @@
             <Label text="Select a question" />
          </placeholder>
         <columns>
-           <TableColumn fx:id="answerColumn" prefWidth="317.0" text="Answer" resizable="false" maxWidth="317" />
-           <TableColumn fx:id="correctColumn" minWidth="0.0" prefWidth="65.0" text="Correct" resizable="false" maxWidth="65" />
-           <TableColumn fx:id="buttonColumn" minWidth="0.0" prefWidth="98.0" text="Action" resizable="false" maxWidth="98"/>
+           <TableColumn fx:id="answerColumn" maxWidth="317" prefWidth="301.0" resizable="false" text="Answer" />
+           <TableColumn fx:id="correctColumn" maxWidth="81.0" minWidth="0.0" prefWidth="62.0" resizable="false" text="Correct" />
+           <TableColumn fx:id="buttonColumn" maxWidth="117.0" minWidth="0.0" prefWidth="117.0" resizable="false" text="Action" />
         </columns>
       </TableView>
       <JFXButton buttonType="RAISED" layoutX="497.0" layoutY="551.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createNewAnswer" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">

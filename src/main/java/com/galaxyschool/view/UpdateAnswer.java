@@ -18,14 +18,16 @@ public class UpdateAnswer extends GalaxyApp {
     private Integer questionParentIdx;
     private Exam parentExam;
     private Answer answer;
+    private boolean isReadOnly = false;
 
     public UpdateAnswer() {
     }
 
-    public UpdateAnswer(Integer questionParentIdx, Exam parentExam, Answer answer) {
+    public UpdateAnswer(Integer questionParentIdx, Exam parentExam, Answer answer, boolean isReadOnly) {
         this.questionParentIdx = questionParentIdx;
         this.parentExam = parentExam;
         this.answer = answer;
+        this.isReadOnly = isReadOnly;
     }
 
     public static void main(String[] args) {
@@ -44,6 +46,7 @@ public class UpdateAnswer extends GalaxyApp {
         answerController.setParentReference(parentExam, questionParentIdx);
         answerController.setAnswer(answer);
         answerController.setStage(stage);
+        answerController.setReadyOnly(isReadOnly);
 
         initApp(stage, answerController, "./UpdateAnswer.fxml");
     }

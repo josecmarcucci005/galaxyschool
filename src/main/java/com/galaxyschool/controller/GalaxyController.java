@@ -1,5 +1,6 @@
 package com.galaxyschool.controller;
 
+import com.galaxyschool.view.WelcomeMenu;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import javafx.fxml.Initializable;
@@ -10,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public abstract class GalaxyController implements Initializable {
 
@@ -56,6 +59,12 @@ public abstract class GalaxyController implements Initializable {
 
     public void closeWindow(MouseEvent mouseEvent) {
         getStage().hide();
+    }
+
+    public void goToWelcomeMenu() throws IOException {
+        getStage().hide();
+
+        new WelcomeMenu().start(new Stage());
     }
 
     public abstract void setStage(Stage stage);

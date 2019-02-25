@@ -45,6 +45,7 @@ public class TeacherController extends GalaxyController {
     @FXML
     private TableColumn<Answer, String> buttonColumn;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -56,7 +57,9 @@ public class TeacherController extends GalaxyController {
             }
         });
         try {
-            examList.setItems(FXCollections.observableList(Exam.getExams()));
+            List<Exam> exams = Exam.getExams();
+            Collections.sort(exams);
+            examList.setItems(FXCollections.observableList(exams));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +70,9 @@ public class TeacherController extends GalaxyController {
             public void handle(MouseEvent event) {
                 Exam e = (Exam) examList.getSelectionModel().getSelectedItem();
 
-                updateQuestionListView(e, null);
+                if (e != null) {
+                    updateQuestionListView(e, null);
+                }
             }
         });
 
@@ -103,9 +108,11 @@ public class TeacherController extends GalaxyController {
 
                 @Override
                 public void handle(MouseEvent event) {
-                    Question question = exam.getQuestions().get(questionListView.getSelectionModel().getSelectedIndex());
+                    if (questionListView.getSelectionModel().getSelectedItem() != null) {
+                        Question question = exam.getQuestions().get(questionListView.getSelectionModel().getSelectedIndex());
 
-                    updateAnswerTableView(question, exam);
+                        updateAnswerTableView(question, exam);
+                    }
                 }
             });
 
@@ -190,8 +197,8 @@ public class TeacherController extends GalaxyController {
         new UpdateQuestion(question, parentExam).start(new Stage());
     }
 
-    public void showUpdateAnswer(Answer answer, Question parentQuestion, Exam parentExam) throws Exception {
-        new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), parentExam, answer).start(new Stage());
+    public void showUpdateAnswer(Answer answer, Question parentQuestion, Exam parentExam, boolean isReadOnly) throws Exception {
+        new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), parentExam, answer, isReadOnly).start(new Stage());
     }
 
     @Override
@@ -238,7 +245,7 @@ public class TeacherController extends GalaxyController {
         } else {
             Exam e = (Exam)examList.getSelectionModel().getSelectedItem();
 
-            new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), e, null).start(new Stage());
+            new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), e, null, false).start(new Stage());
         }
     }
 
@@ -267,7 +274,7 @@ public class TeacherController extends GalaxyController {
 
                 deleteButt.setOnAction(event -> {
                     try {
-                        if (examList.getSelectionModel().getSelectedItem().equals(obj)) {
+                        if (examList.getSelectionModel().getSelectedItem() == null || examList.getSelectionModel().getSelectedItem().equals(obj)) {
                             questionListView.getItems().clear();
 
                             Label placeholderQuestion = new Label("Select an Exam");
@@ -288,6 +295,8 @@ public class TeacherController extends GalaxyController {
 
                         Exam.deleteExam(obj);
                         getListView().getItems().remove(getItem());
+
+                        examList.refresh();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -346,8 +355,14 @@ public class TeacherController extends GalaxyController {
 
                         Exam.update(parentExam);
 
-                        examList.getItems().remove(examList.getItems().get(Collections.binarySearch(examList.getItems(), parentExam)));
-                        examList.getItems().add(parentExam);
+                        for (int i=0; i < examList.getItems().size(); i++) {
+                            Exam e = (Exam) examList.getItems().get(i);
+
+                            if (e.getQuestions().equals(parentExam.getName())) {
+                                examList.getItems().add(i, parentExam);
+                                break;
+                            }
+                        }
 
                         examList.refresh();
 
@@ -411,7 +426,7 @@ public class TeacherController extends GalaxyController {
 
                 editButt.setOnAction(event -> {
                     try {
-                        showUpdateAnswer((Answer) getTableRow().getItem(), parentQuestion, parentExam);
+                        showUpdateAnswer((Answer) getTableRow().getItem(), parentQuestion, parentExam, false);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -426,6 +441,14 @@ public class TeacherController extends GalaxyController {
                         getTableView().getItems().remove(getTableRow().getItem());
 
                         getTableView().refresh();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                showButt.setOnAction(event -> {
+                    try {
+                        showUpdateAnswer((Answer) getTableRow().getItem(), parentQuestion, parentExam, true);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -47,17 +47,6 @@ public class StudentExamSessionController extends GalaxyController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionLabel.setText("Question " + questionIdx + " of " + exam.getQuestions().size() + ":");
-
-        currentQuestion = exam.getQuestions().get(questionIdx - 1);
-        questionTxt.setEditable(false);
-        questionTxt.setText(currentQuestion.getText());
-
-        for (int i=0; i < currentQuestion.getAnswers().size(); i++) {
-            StudentAnswer studentAnswer = new  StudentAnswer(currentQuestion.getAnswers().get(i), new CheckBox());
-            selectionAnswer.add(studentAnswer);
-        }
-
         answerListView.setCellFactory(new Callback<ListView<Exam>, ListCell>() {
             @Override
             public ListCell call(ListView<Exam> param) {
@@ -65,8 +54,26 @@ public class StudentExamSessionController extends GalaxyController {
             }
         });
 
-        answerListView.getItems().addAll(FXCollections.observableList(currentQuestion.getAnswers()));
+        setQuestion();
+    }
 
+    private void setQuestion() {
+        questionLabel.setText("Question " + questionIdx + " of " + exam.getQuestions().size() + ":");
+
+        currentQuestion = exam.getQuestions().get(questionIdx - 1);
+        questionTxt.setEditable(false);
+        questionTxt.setText(currentQuestion.getText());
+
+        selectionAnswer.clear();
+
+        for (int i=0; i < currentQuestion.getAnswers().size(); i++) {
+            StudentAnswer studentAnswer = new  StudentAnswer(currentQuestion.getAnswers().get(i), new CheckBox());
+            selectionAnswer.add(studentAnswer);
+        }
+
+        answerListView.getItems().clear();
+
+        answerListView.getItems().addAll(FXCollections.observableList(currentQuestion.getAnswers()));
     }
 
     public void setExam(Exam exam) {
@@ -89,7 +96,7 @@ public class StudentExamSessionController extends GalaxyController {
             questionLb.setMaxWidth(500);
             questionLb.setWrapText(true);
 
-            TextArea explanationLb = new TextArea("Reason:\r\n" + studentAnswer.answer.getExplanation());
+            TextArea explanationLb = new TextArea();
             explanationLb.setPrefWidth(400);
             explanationLb.setPrefHeight(100);
             explanationLb.setWrapText(true);
@@ -105,21 +112,32 @@ public class StudentExamSessionController extends GalaxyController {
                 awesomeIcon.setIcon(FontAwesomeIconName.MINUS_CIRCLE);
                 awesomeIcon.setSize("1.5em");
 
-                questionLb.setText("The question '" + studentAnswer.answer.getText() + "' is wrong because:");
+                if (studentAnswer.answer.isCorrectAnswer() && !studentAnswer.checkBox.isSelected()) {
+                    questionLb.setText("The answer '" + studentAnswer.answer.getText() + "' is correct and should have been selected!");
+                    explanationLb = null;
+                } else {
+                    questionLb.setText("The answer '" + studentAnswer.answer.getText() + "' is wrong!");
+                    explanationLb.setText(studentAnswer.answer.getExplanation());
+                }
+
             } else {
                 correctAnswers.add(studentAnswer.answer);
 
                 awesomeIcon.setGlyphStyle("-fx-fill:" + BUTTON_COLOR_GREEN);
                 awesomeIcon.setIcon(FontAwesomeIconName.PLUS_CIRCLE);
 
-                questionLb.setText("The question '" + studentAnswer.answer.getText() + "' is correct!");
+                questionLb.setText("The answer '" + studentAnswer.answer.getText() + "' is correct!");
+                explanationLb.setText(studentAnswer.answer.getExplanation());
             }
 
             HBox hboxR1 = new HBox();
             hboxR1.getChildren().addAll(awesomeIcon, questionLb);
 
             grid.addRow(gridIdx++, hboxR1);
-            grid.addRow(gridIdx++,explanationLb);
+
+            if (explanationLb != null) {
+                grid.addRow(gridIdx++, explanationLb);
+            }
         }
 
         if (incorrectAnswers.size() > 0) {
@@ -128,7 +146,24 @@ public class StudentExamSessionController extends GalaxyController {
         }
 
         alert.getDialogPane().setContent(grid);
-        alert.showAndWait();
+
+        ButtonType  continueButt = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        ButtonType  tryAgainButt = new ButtonType("Try again?", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(tryAgainButt, continueButt);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == continueButt) {
+            questionIdx++;
+
+            if (questionIdx < exam.getQuestions().size()) {
+                setQuestion();
+            } else {
+
+            }
+
+        }
     }
 
     class ButtonListAnswerCell extends ListCell<Answer> {

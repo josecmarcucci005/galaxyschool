@@ -82,6 +82,17 @@
             <Font name="Ebrima" size="18.0" />
          </font>
       </Label>
+      <JFXButton buttonType="RAISED" layoutX="720.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#goToWelcomeMenu" prefHeight="45.0" prefWidth="75.0" ripplerFill="WHITE" style="-fx-background-color: black; -fx-background-radius: 0px;" text="Exit" textFill="WHITE">
+         <font>
+            <Font name="Calibri Light" size="14.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="SIGN_OUT" size="1.5em" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
       <JFXButton buttonType="RAISED" layoutX="704.0" layoutY="176.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createNewQuestion" prefHeight="45.0" prefWidth="88.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
          <font>
             <Font name="Calibri Light" size="14.0" />

@@ -24,6 +24,7 @@ public class AnswerController extends GalaxyController {
     private Exam parentExam;
     private Answer answer;
     private Integer questionParentIdx;
+    private boolean isReadyOnly;
 
     @FXML
     private TextArea answerTxt;
@@ -43,10 +44,19 @@ public class AnswerController extends GalaxyController {
             explanationTxt.setText(answer.getExplanation());
             isCorrectRB.setSelected(answer.isCorrectAnswer());
         }
+        if (isReadyOnly) {
+            answerTxt.setEditable(false);
+            explanationTxt.setEditable(false);
+            isCorrectRB.setDisable(true);
+        }
     }
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public void setReadyOnly(boolean readyOnly) {
+        isReadyOnly = readyOnly;
     }
 
     @Override

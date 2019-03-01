@@ -3,15 +3,6 @@
 Assignment 3 - Activity 3
 ================================================================================
 
-
-Your line manager is happy with your work to date and has now asked you to 
-develop the computer program to the agreed brief. 
-
-Following your program flow design and pseudo code from Activity 2, develop the 
-computer program. Note any deviations from original design and annotate the code 
-to explain the language constructs that have been used.
-
-
 Dependencies
 ================================================================================
 

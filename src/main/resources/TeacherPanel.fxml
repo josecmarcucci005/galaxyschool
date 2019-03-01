@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.galaxyschool.view.TeacherPanel">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="TOP_RIGHT" layoutX="-1.0" prefHeight="34.0" prefWidth="807.0" style="-fx-background-color: #004080;">
          <children>
@@ -32,7 +32,7 @@
             </ImageView>
          </children>
       </HBox>
-      <VBox alignment="TOP_CENTER" layoutY="34.0" prefHeight="576.0" prefWidth="284.0" styleClass="sidebar">
+      <VBox alignment="TOP_CENTER" layoutY="34.0" prefHeight="611.0" prefWidth="300.0" styleClass="sidebar">
          <children>
             <Label prefHeight="51.0" prefWidth="300.0" style="-fx-background-color: #00A2D3;" text="Exams" textFill="WHITE">
                <padding>
@@ -50,13 +50,10 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
                <children>
-                  <ListView prefHeight="338.0" prefWidth="282.0" />
+                  <ListView fx:id="examList" prefHeight="338.0" prefWidth="282.0" />
                </children>
             </HBox>
-            <JFXButton buttonType="RAISED" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="200.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add Exam" textFill="WHITE">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
+            <JFXButton buttonType="RAISED" layoutX="83.0" layoutY="441.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createNewExam" prefHeight="45.0" prefWidth="154.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Create Exam" textFill="WHITE">
                <font>
                   <Font name="Calibri Light" size="14.0" />
                </font>
@@ -67,9 +64,39 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
+            
+            <JFXButton buttonType="RAISED" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#importExam" prefHeight="45.0" prefWidth="154.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Import Exam" textFill="WHITE">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Calibri Light" size="14.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="CLOUD_DOWNLOAD" size="1.5em" />
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <JFXButton maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#exportExam" prefHeight="45.0" prefWidth="154.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Export Exam" textFill="WHITE">
+               <font>
+                  <Font name="Calibri Light" size="14.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="CLOUD_UPLOAD" size="1.5em" />
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
          </children>
       </VBox>
-      <ListView layoutX="312.0" layoutY="102.0" prefHeight="207.0" prefWidth="380.0" />
+      <ListView fx:id="questionListView" layoutX="312.0" layoutY="102.0" prefHeight="207.0" prefWidth="380.0">
+         <placeholder>
+            <Label text="Select an Exam" />
+         </placeholder>
+      </ListView>
       <Label layoutX="300.0" layoutY="34.0" prefHeight="51.0" prefWidth="506.0" style="-fx-background-color: #FFFFFF;" text="Questions" textFill="#7c8184">
          <padding>
             <Insets left="10.0" />
@@ -78,40 +105,29 @@
             <Font name="Ebrima" size="18.0" />
          </font>
       </Label>
-      <JFXButton buttonType="RAISED" layoutX="692.0" layoutY="151.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
+      <JFXButton buttonType="RAISED" layoutX="704.0" layoutY="176.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createNewQuestion" prefHeight="45.0" prefWidth="88.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
          <font>
             <Font name="Calibri Light" size="14.0" />
          </font>
          <graphic>
             <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="PLUS_CIRCLE" size="1.5em" />
-         </graphic>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </JFXButton>
-      <JFXButton buttonType="RAISED" layoutX="692.0" layoutY="214.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Delete" textFill="WHITE">
-         <font>
-            <Font name="Calibri Light" size="14.0" />
-         </font>
-         <graphic>
-            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="MINUS" size="1.5em" />
          </graphic>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </JFXButton>
       <Separator layoutX="312.0" layoutY="334.0" prefHeight="7.0" prefWidth="484.0" />
-      <TableView layoutX="314.0" layoutY="351.0" prefHeight="195.0" prefWidth="478.0">
+      <TableView fx:id="tableViewAnswers" layoutX="314.0" layoutY="351.0" prefHeight="207.0" prefWidth="478.0">
          <placeholder>
-            <Label text="Select a question"/>
+            <Label text="Select a question" />
          </placeholder>
         <columns>
-          <TableColumn prefWidth="172.0" text="Answer" />
-          <TableColumn minWidth="0.0" prefWidth="239.0" text="Explanation" />
-            <TableColumn prefWidth="66.0" text="Correct" />
+           <TableColumn fx:id="answerColumn" maxWidth="317" prefWidth="301.0" resizable="false" text="Answer" />
+           <TableColumn fx:id="correctColumn" maxWidth="81.0" minWidth="0.0" prefWidth="62.0" resizable="false" text="Correct" />
+           <TableColumn fx:id="buttonColumn" maxWidth="117.0" minWidth="0.0" prefWidth="117.0" resizable="false" text="Action" />
         </columns>
       </TableView>
-      <JFXButton buttonType="RAISED" layoutX="403.0" layoutY="551.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
+      <JFXButton buttonType="RAISED" layoutX="498.0" layoutY="580.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#createNewAnswer" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Add     " textFill="WHITE">
          <font>
             <Font name="Calibri Light" size="14.0" />
          </font>
@@ -122,16 +138,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </JFXButton>
-      <JFXButton buttonType="RAISED" layoutX="601.0" layoutY="551.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Delete" textFill="WHITE">
-         <font>
-            <Font name="Calibri Light" size="14.0" />
-         </font>
-         <graphic>
-            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="MINUS" size="1.5em" />
-         </graphic>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </JFXButton>
+      <ImageView fitHeight="81.0" fitWidth="150.0" layoutX="708.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@schoolLogo.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

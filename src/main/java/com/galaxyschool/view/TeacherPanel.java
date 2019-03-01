@@ -1,5 +1,8 @@
 package com.galaxyschool.view;
 
+import com.galaxyschool.controller.TeacherController;
+import com.galaxyschool.model.Exam;
+import com.galaxyschool.model.Question;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -10,14 +13,16 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
-public class TeacherPanel extends Application {
+public class TeacherPanel extends GalaxyApp {
 
     private static Stage stage;
 
-    private double xOffset = 0;
-    private double yOffset = 0;
+    private Exam predefineExam;
+    private Integer questionParentIdx;
 
     public static void main(String[] args) {
         launch(args);
@@ -25,40 +30,39 @@ public class TeacherPanel extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        if (stage != null) {
+            stage.hide();
+        }
+
         stage = primaryStage;
+        stage.setResizable(false);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-        Parent root = FXMLLoader.load(ClassLoader.getSystemClassLoader().getResource("./TeacherPanel.fxml"));
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("TeacherPanel.fxml"));
 
-        root.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
-        });
-        root.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            }
-        });
+        TeacherController teacherController = new TeacherController();
+        teacherController.setPredefineReference(predefineExam, questionParentIdx);
+        teacherController.setStage(stage);
+
+        loader.setController(teacherController);
+
+        Parent root = loader.load();
+
+        initWindowButtons(root, stage);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().setAll(ClassLoader.getSystemClassLoader().getResource("./style.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.show();
 
     }
 
-    public void hideWindow(MouseEvent mouseEvent) {
-        TeacherPanel.stage.setIconified(true);
+    public void setPredefineExam(Exam predefineExam) {
+        this.predefineExam = predefineExam;
     }
 
-    public void closeWindow(MouseEvent mouseEvent) {
-        TeacherPanel.stage.hide();
+    public void setQuestionParentIdx(int questionParentIdx) {
+        this.questionParentIdx = questionParentIdx;
     }
 }

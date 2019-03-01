@@ -1,31 +1,116 @@
 package com.galaxyschool.controller;
 
-import com.galaxyschool.db.ExamDao;
-import com.galaxyschool.model.Exam;;
+import com.galaxyschool.db.DuplicateExamException;
+import com.galaxyschool.model.Exam;
+import com.galaxyschool.view.TeacherPanel;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
+import java.net.URL;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.ResourceBundle;
 
-public class ExamController {
+public class ExamController extends GalaxyController {
 
-    private ExamDao examDao = new ExamDao();
+    private static Stage stage;
 
-    public ExamController() throws IOException {
+    private Exam exam;
+    
+    @FXML
+    private ComboBox<String> levelCbx;
+    @FXML
+    private TextField examNmField;
+    @FXML
+    private TextField authorField;
+    @FXML
+    private DatePicker creationDateP;
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        levelCbx.setItems(FXCollections.observableList(Arrays.asList("10","11", "12", "13")));
+
+        if (exam != null) {
+            examNmField.setText(exam.getName());
+            examNmField.editableProperty().setValue(false);
+            examNmField.setDisable(true);
+            authorField.setText(exam.getAuthor());
+            levelCbx.getSelectionModel().select(Long.toString(exam.getLevel()));
+            creationDateP.setValue(exam.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        } else {
+            creationDateP.setValue(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        }
+
+    }
+    
+    public void setExam(String examNm) throws Exception {
+        if (examNm != null) {
+            exam = Exam.getExamByName(examNm);
+        }
     }
 
-    public List<Exam> getExams() {
-        return examDao.getAll();
+    @Override
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
-    public void updateExam(Exam exam) throws IOException {
-        examDao.update(exam);
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 
-    public void deleteExam(Exam exam) throws IOException {
-        examDao.delete(exam);
-    }
+    public void saveExam(ActionEvent actionEvent)  {
 
-    public void saveExam(Exam exam) throws Exception {
-        examDao.save(exam);
+        if (creationDateP.getValue() == null || examNmField.getText() == null || examNmField.getText().isEmpty() ||
+                levelCbx.getValue() == null || levelCbx.getValue().isEmpty() || authorField.getText() == null || authorField.getText().isEmpty() ) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setHeaderText(null);
+            alert.setContentText("You must enter all fields to be able to save the answer!" );
+            alert.showAndWait();
+
+            return;
+        }
+
+        Date date = Date.from(creationDateP.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        try {
+            String operation;
+            if (exam == null) {
+                exam = new Exam(examNmField.getText(), authorField.getText(), Long.valueOf(levelCbx.getValue()), date, new ArrayList<>());
+
+                Exam.saveExam(exam);
+
+                operation = "created";
+            } else {
+                Exam.update(exam);
+
+                operation = "updated";
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Info!");
+            alert.setHeaderText(null);
+            alert.setContentText("The Exam: '" + exam.getName() + "' was successfully "  + operation + "." );
+            alert.showAndWait();
+
+            stage.hide();
+
+            new TeacherPanel().start(new Stage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DuplicateExamException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import com.jfoenix.validation.RequiredFieldValidator?>
+
+<AnchorPane maxWidth="1.7976931348623157E308" prefHeight="350.0" prefWidth="559.0" style="-fx-background-color: #e6e6e6;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="TOP_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="614.0" style="-fx-background-color: #004080;">
+         <children>
+            <ImageView fx:id="minimizeB" fitHeight="18.0" fitWidth="160.0" layoutX="592.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#hideWindow" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@minimizeB.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="closeB" fitHeight="18.0" fitWidth="160.0" layoutX="592.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#closeWindow" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@closeB.png" />
+               </image>
+            </ImageView>
+         </children></HBox>
+      <Label layoutX="64.0" layoutY="66.0" text="Answer:">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <JFXButton buttonType="RAISED" layoutX="450.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#saveAnswer" prefHeight="45.0" prefWidth="113.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Save  " textFill="WHITE">
+         <font>
+            <Font name="Calibri Light" size="14.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="SAVE" size="1.5em" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+      <TextArea fx:id="answerTxt" layoutX="124.0" layoutY="66.0" prefHeight="73.0" prefWidth="439.0" />
+      <Label layoutX="38.0" layoutY="159.0" text="Explanation:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="explanationTxt" layoutX="124.0" layoutY="159.0" prefHeight="73.0" prefWidth="439.0" />
+      <RadioButton fx:id="isCorrectRB" layoutX="124.0" layoutY="260.0" mnemonicParsing="false" text="Is it correct answer?">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </RadioButton>
+   </children>
+</AnchorPane>

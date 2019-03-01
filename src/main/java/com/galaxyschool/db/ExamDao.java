@@ -8,26 +8,37 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExamDao implements Dao<Exam> {
 
     private File galaxyStarJsonFile;
     private List<Exam> exams = new ArrayList<>();
 
-    public ExamDao() throws IOException {
+    private static ExamDao instance;
+
+    public static ExamDao getInstance() throws IOException {
+        if (instance == null) {
+            instance = new ExamDao();
+        }
+        return instance;
+    }
+
+    private ExamDao() throws IOException {
         galaxyStarJsonFile = new File(System.getProperty("user.home") + "/galaxyschool/exams.json");
 
         initJsonFile();
         getAll();
+    }
+
+    public List<Exam> importAndLoadExams(File examsFile) throws Exception {
+        parseAndLoadExams(examsFile);
+        updateExamFile();
+
+        return getAll();
     }
 
     public ExamDao(File galaxyStarJsonFile) throws IOException {
@@ -54,55 +65,18 @@ public class ExamDao implements Dao<Exam> {
                 .orElse(null);
     }
 
+    public List<Exam> getExamsByAge(long level) {
+        return exams.stream()
+                .filter(exam -> level == exam.getLevel())
+                .collect(Collectors.toCollection(() -> new ArrayList<Exam>()));
+    }
+
     @Override
     public List<Exam> getAll() {
-        JSONParser parser = new JSONParser();
 
         if (exams.isEmpty()) {
             try {
-
-                Object obj = parser.parse(new FileReader(galaxyStarJsonFile));
-
-                JSONObject jsonObject = (JSONObject) obj;
-
-                JSONArray examList = (JSONArray) jsonObject.get("exams");
-
-                Iterator<JSONObject> examsIterator = examList.iterator();
-                while (examsIterator.hasNext()) {
-                    JSONObject examJsonObject = examsIterator.next();
-
-                    String name = (String) examJsonObject.get("name");
-                    String author = (String) examJsonObject.get("author");
-                    long level = (Long) examJsonObject.get("level");
-                    Date creationDate = new SimpleDateFormat("dd/MM/yyyy").parse((String) examJsonObject.get("creationDate"));
-                    JSONArray questionList = (JSONArray) examJsonObject.get("questionList");
-
-                    Iterator<JSONObject> questionsIterator = questionList.iterator();
-                    List<Question> questions = new ArrayList<>();
-                    while (questionsIterator.hasNext()) {
-                        JSONObject questionJsonObject = questionsIterator.next();
-
-                        String questionText = (String) questionJsonObject.get("text");
-
-                        JSONArray answerList = (JSONArray) questionJsonObject.get("answerList");
-
-                        Iterator<JSONObject> answerIterator = answerList.iterator();
-                        List<Answer> answers = new ArrayList<>();
-                        while (answerIterator.hasNext()) {
-                            JSONObject answerJsonObject = answerIterator.next();
-
-                            String answerText = (String) answerJsonObject.get("text");
-                            boolean correctAnswer = (Boolean) answerJsonObject.get("correctAnswer");
-
-                            answers.add(new Answer(answerText, correctAnswer));
-                        }
-
-                        questions.add(new Question(questionText, answers));
-                    }
-                    exams.add(new Exam(name, author, level, creationDate, questions));
-                }
-
-
+                parseAndLoadExams(galaxyStarJsonFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -110,10 +84,60 @@ public class ExamDao implements Dao<Exam> {
         return exams;
     }
 
+    private void parseAndLoadExams(File examsFile) throws Exception {
+        JSONParser parser = new JSONParser();
+
+        Object obj = parser.parse(new FileReader(examsFile));
+
+        JSONObject jsonObject = (JSONObject) obj;
+
+        JSONArray examList = (JSONArray) jsonObject.get("exams");
+
+        Iterator<JSONObject> examsIterator = examList.iterator();
+        while (examsIterator.hasNext()) {
+            JSONObject examJsonObject = examsIterator.next();
+
+            String name = (String) examJsonObject.get("name");
+
+            if (get(name) == null) {
+
+                String author = (String) examJsonObject.get("author");
+                long level = (Long) examJsonObject.get("level");
+                Date creationDate = new SimpleDateFormat("dd/MM/yyyy").parse((String) examJsonObject.get("creationDate"));
+                JSONArray questionList = (JSONArray) examJsonObject.get("questionList");
+
+                Iterator<JSONObject> questionsIterator = questionList.iterator();
+                List<Question> questions = new ArrayList<>();
+                while (questionsIterator.hasNext()) {
+                    JSONObject questionJsonObject = questionsIterator.next();
+
+                    String questionText = (String) questionJsonObject.get("text");
+
+                    JSONArray answerList = (JSONArray) questionJsonObject.get("answerList");
+
+                    Iterator<JSONObject> answerIterator = answerList.iterator();
+                    List<Answer> answers = new ArrayList<>();
+                    while (answerIterator.hasNext()) {
+                        JSONObject answerJsonObject = answerIterator.next();
+
+                        String answerText = (String) answerJsonObject.get("text");
+                        boolean correctAnswer = (Boolean) answerJsonObject.get("correctAnswer");
+                        String explanation = (String) answerJsonObject.get("explanation");
+
+                        answers.add(new Answer(answerText, correctAnswer, explanation));
+                    }
+
+                    questions.add(new Question(questionText, answers));
+                }
+                exams.add(new Exam(name, author, level, creationDate, questions));
+            }
+        }
+    }
+
     @Override
-    public void save(Exam exam) throws Exception {
+    public void save(Exam exam) throws DuplicateExamException, IOException {
         if (get(exam.getName()) != null) {
-            throw new Exception("The exam with name '" + exam.getName() + "' already exists!");
+            throw new DuplicateExamException("The exam with name '" + exam.getName() + "' already exists so it can't be created!");
         }
 
         exams.add(exam);
@@ -139,6 +163,19 @@ public class ExamDao implements Dao<Exam> {
         exams.clear();
 
         updateExamFile();
+    }
+
+    public String getExamsInJSONFormat(Collection<Exam> exams) {
+        JSONArray examsJsonArray = new JSONArray();
+
+        for (Exam e : exams) {
+            examsJsonArray.add(getExamJsonObject(e));
+        }
+
+        JSONObject examJson = new JSONObject();
+        examJson.put("exams", examsJsonArray);
+
+        return JsonWriter.formatJson(examJson.toJSONString());
     }
 
     private void updateExamFile() throws IOException {
@@ -169,6 +206,7 @@ public class ExamDao implements Dao<Exam> {
                 JSONObject answerObject = new JSONObject();
                 answerObject.put("text", a.getText());
                 answerObject.put("correctAnswer", a.isCorrectAnswer());
+                answerObject.put("explanation", a.getExplanation());
 
                 answers.add(answerObject);
             }

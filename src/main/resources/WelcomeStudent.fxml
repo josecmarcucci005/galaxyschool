@@ -4,8 +4,8 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -13,14 +13,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxWidth="1.7976931348623157E308" prefHeight="350.0" prefWidth="600.0" style="-fx-background-color: #e6e6e6;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxWidth="1.7976931348623157E308" prefHeight="350.0" prefWidth="588.0" style="-fx-background-color: #e6e6e6;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="81.0" fitWidth="150.0" layoutX="519.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@schoolLogo.png" />
          </image>
       </ImageView>
-      <Button fx:id="continueB" layoutX="270.0" layoutY="228.0" mnemonicParsing="false" onAction="#showStudentExamSession" prefHeight="35.0" prefWidth="95.0" style="-fx-background-color: #00A2D3;" text="Start" textFill="white">
+      <Button fx:id="continueB" layoutX="491.0" layoutY="217.0" mnemonicParsing="false" onAction="#showStudentExamSession" prefHeight="35.0" prefWidth="95.0" style="-fx-background-color: #00A2D3;" text="Start" textFill="white">
          <tooltip><Tooltip text="Start" /></tooltip>
       </Button>
       <HBox alignment="TOP_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="614.0" style="-fx-background-color: #004080;">
@@ -36,34 +36,22 @@
                </image>
             </ImageView>
          </children></HBox>
-      <Label layoutX="35.0" layoutY="60.0" text="Welcome!">
+      <Label layoutX="23.0" layoutY="61.0" text="Welcome!">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <JFXButton buttonType="RAISED" layoutX="20.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#goToWelcomeMenu" prefHeight="45.0" prefWidth="40.0" ripplerFill="WHITE" style="-fx-background-color: black; -fx-background-radius: 0px;">
+      <ListView fx:id="examList" layoutX="112.0" layoutY="150.0" prefHeight="168.0" prefWidth="357.0" />
+      <JFXButton buttonType="RAISED" layoutX="226.0" layoutY="91.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#importExam" prefHeight="45.0" prefWidth="129.0" ripplerFill="WHITE" style="-fx-background-color: #00A2D3; -fx-background-radius: 0px;" text="Import Exam" textFill="WHITE">
          <font>
             <Font name="Calibri Light" size="14.0" />
          </font>
          <graphic>
-            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="SIGN_OUT" size="1.5em" />
+            <FontAwesomeIcon glyphStyle="-fx-fill:#fff" iconName="CLOUD_DOWNLOAD" size="1.5em" />
          </graphic>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
-         <tooltip><Tooltip text="Exit" /></tooltip>
       </JFXButton>
-      <Label layoutX="180.0" layoutY="120.0" text="Select your age:">
-      <font>
-         <Font size="14.0" />
-      </font>
-      </Label>
-      <ComboBox fx:id="ageComboBox" layoutX="330.0" layoutY="120.0" prefWidth="70.0" />
-      <Label layoutX="180.0" layoutY="160.0" text="Select an exam:">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="examComboBox" layoutX="330.0" layoutY="160.0" prefWidth="120.0" />
    </children>
 </AnchorPane>

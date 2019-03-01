@@ -3,11 +3,9 @@ package com.galaxyschool.model;
 import com.galaxyschool.db.DuplicateExamException;
 import com.galaxyschool.db.ExamDao;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Exam implements Comparable<Exam> {
 
@@ -115,6 +113,15 @@ public class Exam implements Comparable<Exam> {
 
     public static List<Exam> getExamsByYear(String year) throws IOException {
         return ExamDao.getInstance().getExamsByAge(Long.valueOf(year));
+    }
+
+    public static List<Exam> importAndLoadExams(File examsFile) throws Exception {
+        return ExamDao.getInstance().importAndLoadExams(examsFile);
+
+    }
+
+    public static String getExamsInJSONFormat(Collection<Exam> exams) throws IOException {
+        return ExamDao.getInstance().getExamsInJSONFormat(exams);
     }
 
     @Override

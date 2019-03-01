@@ -13,12 +13,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -201,6 +206,84 @@ public class TeacherController extends GalaxyController {
         new UpdateAnswer(questionListView.getSelectionModel().getSelectedIndex(), parentExam, answer, isReadOnly).start(new Stage());
     }
 
+    public void importExam(ActionEvent event) throws Exception {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        fileChooser.setTitle("Open Exams File");
+
+        File file = fileChooser.showOpenDialog(stage);
+
+        try {
+            if (file != null) {
+                Exam.importAndLoadExams(file);
+
+                examList.getItems().clear();
+
+                List<Exam> exams = Exam.getExams();
+                Collections.sort(exams);
+                examList.setItems(FXCollections.observableList(exams));
+
+                clearQuestionView();
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("File Imported!");
+                alert.setHeaderText(null);
+                alert.setContentText("The file: '" + file.getAbsolutePath() + "'  was successfully imported!");
+                alert.showAndWait();
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText(null);
+            alert.setContentText("There was an error when importing the file: '" + file.getAbsolutePath() + "', the error was: \r\n" + e.getMessage() );
+            alert.showAndWait();
+        }
+    }
+
+    public void exportExam(ActionEvent event) throws IOException {
+        if (examList.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning!");
+            alert.setHeaderText(null);
+            alert.setContentText("You must select an exam to be exported!");
+            alert.showAndWait();
+
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+        fileChooser.setInitialFileName("exam.json");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        fileChooser.setTitle("Save Exams File");
+
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            try {
+                PrintWriter writer;
+                writer = new PrintWriter(file);
+                writer.println(Exam.getExamsInJSONFormat(examList.getSelectionModel().getSelectedItems()));
+                writer.close();
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("File Created!");
+                alert.setHeaderText(null);
+                alert.setContentText("The file: '" + file.getAbsolutePath() + "'  was sucessfully created!" );
+                alert.showAndWait();
+            } catch (IOException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error!");
+                alert.setHeaderText(null);
+                alert.setContentText("The export of the file failed due to the error:\r\n" + ex.getMessage() );
+                alert.showAndWait();
+            }
+        }
+    }
+
     @Override
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -249,6 +332,25 @@ public class TeacherController extends GalaxyController {
         }
     }
 
+    private void clearQuestionView() {
+        questionListView.getItems().clear();
+
+        Label placeholderQuestion = new Label("Select an Exam");
+        placeholderQuestion.setMaxWidth(300);
+        placeholderQuestion.setAlignment(Pos.CENTER);
+
+        questionListView.setPlaceholder(placeholderQuestion);
+
+
+        tableViewAnswers.getItems().clear();
+
+        Label placeholderAnswer = new Label("Select a question");
+        placeholderAnswer.setMaxWidth(400);
+        placeholderAnswer.alignmentProperty().setValue(Pos.CENTER);
+
+        tableViewAnswers.setPlaceholder(placeholderAnswer);
+    }
+
     class ButtonListExamCell extends ListCell<Exam> {
 
         @Override
@@ -275,22 +377,7 @@ public class TeacherController extends GalaxyController {
                 deleteButt.setOnAction(event -> {
                     try {
                         if (examList.getSelectionModel().getSelectedItem() == null || examList.getSelectionModel().getSelectedItem().equals(obj)) {
-                            questionListView.getItems().clear();
-
-                            Label placeholderQuestion = new Label("Select an Exam");
-                            placeholderQuestion.setMaxWidth(300);
-                            placeholderQuestion.setAlignment(Pos.CENTER);
-
-                            questionListView.setPlaceholder(placeholderQuestion);
-
-
-                            tableViewAnswers.getItems().clear();
-
-                            Label placeholderAnswer = new Label("Select a question");
-                            placeholderAnswer.setMaxWidth(400);
-                            placeholderAnswer.alignmentProperty().setValue(Pos.CENTER);
-
-                            tableViewAnswers.setPlaceholder(placeholderAnswer);
+                            clearQuestionView();
                         }
 
                         Exam.deleteExam(obj);
@@ -381,7 +468,7 @@ public class TeacherController extends GalaxyController {
         }
     }
 
-    public class AnswerTableCellFactory implements Callback<TableColumn<Answer, String>, TableCell<Answer, String>> {
+    class AnswerTableCellFactory implements Callback<TableColumn<Answer, String>, TableCell<Answer, String>> {
 
         private Question parentQuestion;
         private Exam parentExam;

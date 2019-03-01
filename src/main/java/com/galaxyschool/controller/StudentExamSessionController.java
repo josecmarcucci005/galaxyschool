@@ -3,6 +3,7 @@ package com.galaxyschool.controller;
 import com.galaxyschool.model.Answer;
 import com.galaxyschool.model.Exam;
 import com.galaxyschool.model.Question;
+import com.galaxyschool.view.WelcomeStudent;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import javafx.collections.FXCollections;
@@ -18,7 +19,6 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class StudentExamSessionController extends GalaxyController {
 
@@ -80,7 +80,7 @@ public class StudentExamSessionController extends GalaxyController {
         this.exam = exam;
     }
 
-    public void submit(ActionEvent event) {
+    public void submit(ActionEvent event) throws Exception {
         List<Answer> incorrectAnswers = new ArrayList();
         List<Answer> correctAnswers = new ArrayList();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -101,6 +101,7 @@ public class StudentExamSessionController extends GalaxyController {
             explanationLb.setPrefHeight(100);
             explanationLb.setWrapText(true);
             explanationLb.setEditable(false);
+            explanationLb.setText(studentAnswer.answer.getExplanation());
 
             FontAwesomeIcon awesomeIcon = new FontAwesomeIcon();
             awesomeIcon.setSize("1.5em");
@@ -113,11 +114,9 @@ public class StudentExamSessionController extends GalaxyController {
                 awesomeIcon.setSize("1.5em");
 
                 if (studentAnswer.answer.isCorrectAnswer() && !studentAnswer.checkBox.isSelected()) {
-                    questionLb.setText("The answer '" + studentAnswer.answer.getText() + "' is correct and should have been selected!");
-                    explanationLb = null;
+                    questionLb.setText("Wrong! The answer '" + studentAnswer.answer.getText() + "' is correct and it had to be selected!");
                 } else {
-                    questionLb.setText("The answer '" + studentAnswer.answer.getText() + "' is wrong!");
-                    explanationLb.setText(studentAnswer.answer.getExplanation());
+                    questionLb.setText("Wrong! The answer '" + studentAnswer.answer.getText() + "' is not correct and shouldn't had to be selected!");
                 }
 
             } else {
@@ -126,44 +125,56 @@ public class StudentExamSessionController extends GalaxyController {
                 awesomeIcon.setGlyphStyle("-fx-fill:" + BUTTON_COLOR_GREEN);
                 awesomeIcon.setIcon(FontAwesomeIconName.PLUS_CIRCLE);
 
-                questionLb.setText("The answer '" + studentAnswer.answer.getText() + "' is correct!");
-                explanationLb.setText(studentAnswer.answer.getExplanation());
+                if (studentAnswer.answer.isCorrectAnswer()) {
+                    questionLb.setText("Correct! The answer: '" + studentAnswer.answer.getText() + "' is correct and you select it!");
+                } else {
+                    questionLb.setText("Correct! The answer: '" + studentAnswer.answer.getText() + "' is not correct and you didn't select it!");
+                }
             }
 
             HBox hboxR1 = new HBox();
             hboxR1.getChildren().addAll(awesomeIcon, questionLb);
 
             grid.addRow(gridIdx++, hboxR1);
-
-            if (explanationLb != null) {
-                grid.addRow(gridIdx++, explanationLb);
-            }
+            grid.addRow(gridIdx++, explanationLb);
         }
 
+        ButtonType  tryAgainButt = new ButtonType("Try again?", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        List<ButtonType> buttonTypes = new ArrayList<>();
         if (incorrectAnswers.size() > 0) {
             alert.setAlertType(Alert.AlertType.ERROR);
             alert.setTitle("Wrong!");
+            buttonTypes.add(tryAgainButt);
         }
 
         alert.getDialogPane().setContent(grid);
 
-        ButtonType  continueButt = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-        ButtonType  tryAgainButt = new ButtonType("Try again?", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType  continueButt = new ButtonType("Next Question", ButtonBar.ButtonData.OK_DONE);
+        ButtonType  finishButt = new ButtonType("Finish", ButtonBar.ButtonData.FINISH);
 
-        alert.getButtonTypes().setAll(tryAgainButt, continueButt);
+        if (questionIdx == exam.getQuestions().size()) {
+            buttonTypes.add(finishButt);
+            alert.getButtonTypes().setAll(buttonTypes);
+        } else {
+            buttonTypes.add(continueButt);
+            alert.getButtonTypes().setAll(buttonTypes);
+        }
 
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == continueButt) {
             questionIdx++;
-
-            if (questionIdx < exam.getQuestions().size()) {
-                setQuestion();
-            } else {
-
-            }
-
+            setQuestion();
+        } else if (result.get() == finishButt) {
+            goToWelcomeMenu();
         }
+    }
+
+    public void goToWelcomeMenu() throws Exception {
+        getStage().hide();
+
+        new WelcomeStudent().start(new Stage());
     }
 
     class ButtonListAnswerCell extends ListCell<Answer> {

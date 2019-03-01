@@ -22,7 +22,7 @@ public class StudentExamSession extends GalaxyApp {
         studentExamSessionController.setStage(stage);
         studentExamSessionController.setExam(exam);
 
-        initApp(stage, studentExamSessionController, "./StudentExamSession.fxml");
+        initApp(stage, studentExamSessionController, "StudentExamSession.fxml");
     }
 
     public void setExam(Exam exam) {

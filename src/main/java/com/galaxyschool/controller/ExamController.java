@@ -2,14 +2,11 @@ package com.galaxyschool.controller;
 
 import com.galaxyschool.db.DuplicateExamException;
 import com.galaxyschool.model.Exam;
-import com.galaxyschool.model.Question;
 import com.galaxyschool.view.TeacherPanel;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;

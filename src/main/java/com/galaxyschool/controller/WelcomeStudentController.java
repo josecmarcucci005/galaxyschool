@@ -1,36 +1,28 @@
 package com.galaxyschool.controller;
 
+import com.galaxyschool.db.ExamDao;
 import com.galaxyschool.model.Exam;
 import com.galaxyschool.view.StudentExamSession;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class WelcomeStudentController extends GalaxyController {
 
     private static Stage stage;
 
     @FXML
-    private ComboBox<String> ageComboBox;
-    @FXML
-    private ComboBox<Exam> examComboBox;
+    private ListView<Exam> examList;
+
 
     @Override
     public void setStage(Stage stage) {
@@ -44,75 +36,50 @@ public class WelcomeStudentController extends GalaxyController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        examComboBox.setEditable(false);
-
-        examComboBox.setCellFactory(new Callback<ListView<Exam>, ListCell<Exam>>() {
+        //Populating exam list view
+        examList.setCellFactory(new Callback<ListView<Exam>, ListCell<Exam>>() {
             @Override
             public ListCell<Exam> call(ListView<Exam> param) {
-                return new ListCell<Exam>() {
+                ListCell<Exam> cell = new ListCell<Exam>() {
+
                     @Override
-                    protected void updateItem(Exam obj, boolean empty) {
+                    public void updateItem(Exam obj, boolean empty) {
                         super.updateItem(obj, empty);
-                        if (obj == null || empty) {
+                        if (empty) {
+                            setText(null);
                             setGraphic(null);
                         } else {
                             setText(obj.getName());
+                            setGraphic(null);
                         }
                     }
-                } ;
+                };
+                return cell;
             }
         });
 
-        examComboBox.setConverter(new StringConverter<Exam>() {
+        try {
+            ExamDao examDao = new ExamDao(new File(System.getProperty("user.home") + "/galaxyschool/studentExams.json"));
 
-            @Override
-            public String toString(Exam object) {
-                if (object != null) {
-                    return object.getName();
-                }
-                return "";
+            List<Exam> exams = examDao.getAll();
+
+            if (exams.isEmpty()) {
+                Label placeholder = new Label("Currently you don't have any exam. Please import an exam...");
+                placeholder.setMaxWidth(300);
+                placeholder.setWrapText(true);
+
+                examList.setPlaceholder(placeholder);
+            } else {
+                Collections.sort(exams);
+                examList.setItems(FXCollections.observableList(exams));
             }
-
-            @Override
-            public Exam fromString(String string) {
-                return examComboBox.getItems().stream().filter(ap ->
-                        ap.getName().equals(string)).findFirst().orElse(null);
-            }
-        });
-
-        ageComboBox.setItems(FXCollections.observableList(Arrays.asList("10","11", "12", "13")));
-        ageComboBox.setPromptText("Select your age...");
-
-        ageComboBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                try {
-                    if (newValue == null || newValue.isEmpty()) {
-                        examComboBox.setEditable(false);
-
-                        examComboBox.setItems(FXCollections.observableList(new ArrayList<Exam>()));
-                    } else {
-                        List<Exam> exams = Exam.getExamsByYear(newValue);
-
-                        if (exams.isEmpty()) {
-                            examComboBox.setPromptText("No exams...");
-                            examComboBox.setEditable(false);
-                        }
-                        else {
-                            examComboBox.setEditable(true);
-
-                            examComboBox.setItems(FXCollections.observableList(exams));
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void showStudentExamSession(ActionEvent actionEvent) throws Exception {
-        if (examComboBox.getSelectionModel().getSelectedItem() == null) {
+        if (examList.getSelectionModel().getSelectedItem() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning!");
             alert.setHeaderText(null);
@@ -120,10 +87,46 @@ public class WelcomeStudentController extends GalaxyController {
             alert.showAndWait();
         } else {
             StudentExamSession studentExamSession = new StudentExamSession();
-            studentExamSession.setExam(examComboBox.getSelectionModel().getSelectedItem());
+            studentExamSession.setExam(examList.getSelectionModel().getSelectedItem());
             studentExamSession.start(new Stage());
 
             stage.hide();
+        }
+    }
+
+    public void importExam(ActionEvent event) throws Exception {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        fileChooser.setTitle("Open Exams File");
+
+        ExamDao examDao = new ExamDao(new File(System.getProperty("user.home") + "/galaxyschool/studentExams.json"));
+
+        File file = fileChooser.showOpenDialog(stage);
+
+        try {
+            if (file != null) {
+                examDao.importAndLoadExams(file);
+
+                examList.getItems().clear();
+
+                List<Exam> exams = examDao.getAll();
+                Collections.sort(exams);
+                examList.setItems(FXCollections.observableList(exams));
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("File Imported!");
+                alert.setHeaderText(null);
+                alert.setContentText("The file: '" + file.getAbsolutePath() + "'  was successfully imported!");
+                alert.showAndWait();
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText(null);
+            alert.setContentText("There was an error when importing the file: '" + file.getAbsolutePath() + "', the error was: \r\n" + e.getMessage() );
+            alert.showAndWait();
         }
     }
 }

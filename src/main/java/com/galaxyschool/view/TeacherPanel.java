@@ -13,7 +13,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class TeacherPanel extends GalaxyApp {
 
@@ -36,8 +38,8 @@ public class TeacherPanel extends GalaxyApp {
         stage.setResizable(false);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-        
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("./TeacherPanel.fxml"));
+
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("TeacherPanel.fxml"));
 
         TeacherController teacherController = new TeacherController();
         teacherController.setPredefineReference(predefineExam, questionParentIdx);
@@ -50,7 +52,6 @@ public class TeacherPanel extends GalaxyApp {
         initWindowButtons(root, stage);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().setAll(ClassLoader.getSystemClassLoader().getResource("./style.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.show();

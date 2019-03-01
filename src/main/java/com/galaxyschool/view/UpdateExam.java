@@ -42,7 +42,7 @@ public class UpdateExam extends GalaxyApp {
         examController.setExam(examName);
         examController.setStage(stage);
 
-        initApp(stage, examController, "./UpdateExam.fxml");
+        initApp(stage, examController, "UpdateExam.fxml");
     }
 
 }

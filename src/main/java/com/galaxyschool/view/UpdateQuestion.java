@@ -42,7 +42,7 @@ public class UpdateQuestion extends GalaxyApp {
         questionController.setExamParent(parentExam);
         questionController.setStage(stage);
 
-        initApp(stage, questionController, "./UpdateQuestion.fxml");
+        initApp(stage, questionController, "UpdateQuestion.fxml");
     }
 
 }

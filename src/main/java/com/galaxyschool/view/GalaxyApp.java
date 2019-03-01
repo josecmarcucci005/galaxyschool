@@ -17,6 +17,8 @@ public abstract class GalaxyApp extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    private Scene scene;
+
     protected void initWindowButtons(Parent root, Stage stage) {
         root.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -50,5 +52,12 @@ public abstract class GalaxyApp extends Application {
 
         stage.setScene(scene);
         stage.show();
+
+        this.scene = scene;
     }
+
+    public Scene getScene() {
+        return scene;
+    }
+
 }

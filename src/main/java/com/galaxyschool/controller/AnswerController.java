@@ -9,12 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
 
 public class AnswerController extends GalaxyController {
 
@@ -122,3 +122,4 @@ public class AnswerController extends GalaxyController {
         teacherPanel.start(new Stage());
     }
 }
+

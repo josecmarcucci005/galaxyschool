@@ -1,5 +1,5 @@
+package com.galaxyschool.db;
 
-import com.galaxyschool.db.ExamDao;
 import com.galaxyschool.model.Answer;
 import com.galaxyschool.model.Exam;
 import com.galaxyschool.model.Question;

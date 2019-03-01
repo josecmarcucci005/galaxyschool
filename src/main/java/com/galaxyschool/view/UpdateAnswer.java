@@ -48,7 +48,7 @@ public class UpdateAnswer extends GalaxyApp {
         answerController.setStage(stage);
         answerController.setReadyOnly(isReadOnly);
 
-        initApp(stage, answerController, "./UpdateAnswer.fxml");
+        initApp(stage, answerController, "UpdateAnswer.fxml");
     }
 
 }

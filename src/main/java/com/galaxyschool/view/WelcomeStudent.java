@@ -7,6 +7,10 @@ public class WelcomeStudent extends GalaxyApp {
 
     private static Stage stage;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         if (stage != null) {
@@ -18,6 +22,6 @@ public class WelcomeStudent extends GalaxyApp {
         WelcomeStudentController welcomeStudentController = new WelcomeStudentController();
         welcomeStudentController.setStage(stage);
 
-        initApp(stage, welcomeStudentController, "./WelcomeStudent.fxml");
+        initApp(stage, welcomeStudentController, "WelcomeStudent.fxml");
     }
 }
